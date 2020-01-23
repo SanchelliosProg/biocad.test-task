@@ -23,18 +23,4 @@ public class EmailTest extends TestBase {
         assertThat(messagePage.getSenderEmail(), equalTo("vasyania2009@gmail.com"));
         assertThat(messagePage.getMessageContent(), equalTo("beep-beep"));
     }
-
-    @Test
-    public void testAnotherMailCheck() {
-        MailPage mailPage = new LoginPage(driver).navigateTo()
-                .login(username, password);
-        MessagePage messagePage = mailPage.openMessageWithTitle("TEST_002");
-
-        assertThat(messagePage.isMessageFound(), equalTo(true));
-
-        assertThat(messagePage.getTheme(), equalTo("TEST_002"));
-        assertThat(messagePage.getSenderEmail(), equalTo("vasyania2009@gmail.com"));
-        assertThat(messagePage.getMessageContent(), equalTo("beep-beep"));
-    }
-
 }
