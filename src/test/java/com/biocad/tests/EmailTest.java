@@ -20,7 +20,7 @@ public class EmailTest extends TestBase {
 
     @Test
     public void testMailCheck() {
-        //set preconditions
+        //Preconditions
         final String mailTopic = "Hello";
         final String mailContent = "How are you doing, buddy?";
 
@@ -32,6 +32,7 @@ public class EmailTest extends TestBase {
             e.printStackTrace();
         }
 
+        //Test
         MailPage mailPage = new LoginPage(driver).navigateTo()
                 .login(targetUser.getUsername(), targetUser.getPassword());
         MessagePage messagePage = mailPage.openMessageWithTitle(mailTopic);
