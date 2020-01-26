@@ -11,7 +11,7 @@ public class MessagePage extends Page {
 
     private final By THREAD_SUBJECT_CSS = By.cssSelector("h2.thread__subject");
     private final By LETTER_AUTHOR_LABEL_CSS = By.cssSelector(".letter__author span.letter__contact-item");
-    private final By LETTER_CONTENT_CSS = By.cssSelector("div[dir='ltr']");
+    private final By LETTER_CONTENT_CSS = By.cssSelector("div.js-helper.js-readmsg-msg");
 
     public MessagePage(WebDriver driver) {
         super(driver);
@@ -22,7 +22,7 @@ public class MessagePage extends Page {
         this.isMessageFound = isMessageFound;
     }
 
-    public String getTheme() {
+    public String getTopic() {
         return new WebDriverWait(driver, 3)
                 .until(ExpectedConditions.presenceOfElementLocated(THREAD_SUBJECT_CSS))
                 .getText();
