@@ -1,4 +1,4 @@
-package com.biocad.com.biocad.utils;
+package com.biocad.utils;
 
 import com.biocad.models.User;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +14,8 @@ public class MailRuSmtpClient {
 
     private User sender;
     private Properties sessionProps;
+
+    private boolean isMailSent = false;
 
     public MailRuSmtpClient(User sender) {
         this.sender = sender;
@@ -44,6 +46,11 @@ public class MailRuSmtpClient {
 
         Transport.send(message);
         log.debug("Message was sent to {}", toAddress);
+        isMailSent = true;
+    }
+
+    public boolean isMailSent() {
+        return isMailSent;
     }
 
     private void setUpSessionProperties() {

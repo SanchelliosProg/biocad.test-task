@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.Map;
 
 public class TestBase {
+    //TODO: Place it into singleton
+    protected static boolean SHOULD_CLEANUP_TARGET_ACCOUNT = false;
 
     private static Logger log = LogManager.getLogger(TestBase.class);
 
@@ -31,7 +33,7 @@ public class TestBase {
 
         if (Boolean.parseBoolean(System.getProperty("loadWebDriverFromTestProject"))) {
             log.debug("Getting chromedriver from local project");
-            if(SystemUtils.IS_OS_WINDOWS) {
+            if (SystemUtils.IS_OS_WINDOWS) {
                 log.debug("Loading Chrome Driver for Windows");
                 System.setProperty("webdriver.chrome.driver", "./src/test/resources/chromedriver.exe");
             } else if (SystemUtils.IS_OS_LINUX) {
@@ -60,22 +62,22 @@ public class TestBase {
         senderUser = new User((Map<String, String>) testDataJson.get("sender"));
         targetUser = new User((Map<String, String>) testDataJson.get("target"));
 
-        log.info("Sender user: username - {}, password = {}", senderUser.getUsername(), senderUser.getPassword());
-        log.info("Target user: username - {}, password = {}", targetUser.getUsername(), targetUser.getPassword());
+        log.info("Sender user: username - {}", senderUser.getUsername());
+        log.info("Target user: username - {}", targetUser.getUsername());
     }
 
     @AfterAll
     public static void tearDown() {
-        MailPage mailPage = new MailPage(driver);
-        mailPage.deleteAllMails();
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (SHOULD_CLEANUP_TARGET_ACCOUNT) {
+            cleanupTargetAccount();
         }
         driver.close();
-        //TODO cleanup mails
+        log.info("Web driver was closed");
     }
 
+    protected static void cleanupTargetAccount() {
+        MailPage mailPage = new MailPage(driver);
+        mailPage.deleteAllMails();
+        mailPage.logout();
+    }
 }

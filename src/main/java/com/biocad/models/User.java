@@ -1,10 +1,12 @@
 package com.biocad.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Map;
 
 @Data
+@AllArgsConstructor
 public final class User {
     private final String username;
     private final String domain;
