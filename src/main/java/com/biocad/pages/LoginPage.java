@@ -1,6 +1,7 @@
 package com.biocad.pages;
 
 import com.biocad.models.User;
+import com.biocad.utils.TargetAccountsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -17,6 +18,9 @@ public class LoginPage extends Page {
 
     private final String URL = "https://mail.ru/";
 
+    protected By loginError;
+    protected By passwordError;
+
     protected By EMAIL_INPUT_CSS = By.cssSelector("#mailbox\\:login");
     protected By PASSWORD_INPUT_CSS = By.cssSelector("#mailbox\\:password");
     protected By ENTER_PASSWORD_BUTTON_CSS = By.cssSelector("#mailbox\\:submit > input");
@@ -27,6 +31,9 @@ public class LoginPage extends Page {
 
     public LoginPage(WebDriver driver) {
         super(driver);
+        By mailboxErrorCss = By.cssSelector("div#mailbox\\:error");
+        loginError = mailboxErrorCss;
+        passwordError = mailboxErrorCss;
     }
 
     public LoginPage navigateTo() {
@@ -35,12 +42,15 @@ public class LoginPage extends Page {
     }
 
     public MailPage login(User user) {
+        TargetAccountsContext targetAccountsContext = TargetAccountsContext.getInstance();
         try {
             WebElement userIcon = getWait(3).until(ExpectedConditions.presenceOfElementLocated(LOGGED_IN_USER_LABEL_CSS));
+            log.info("User {} is already logged in - going to Mail Page directly", user.toString());
             userIcon.click();
             return new MailPage(driver);
         } catch (TimeoutException ex) {
             log.info("User is not logged in - signing in");
+            targetAccountsContext.isTargetUserLoggedIn(false);
             if (isCurrentPageAlternativeLogin()) {
                 log.warn("Something went wrong and we were redirected to {}, - trying to login through this page.", AlternativeLoginPage.URL);
                 AlternativeLoginPage page = new AlternativeLoginPage(driver);
@@ -56,6 +66,7 @@ public class LoginPage extends Page {
             if (isCurrentPageAlternativeLogin()) {
                 throw new IllegalArgumentException("Failed to login user: " + user.toString());
             } else {
+                targetAccountsContext.isTargetUserLoggedIn(true);
                 return new MailPage(driver);
             }
         }
@@ -69,7 +80,7 @@ public class LoginPage extends Page {
     protected void enterLogin(String login) {
         activateInputField(EMAIL_INPUT_CSS).sendKeys(login);
         driver.findElement(ENTER_PASSWORD_BUTTON_CSS).click();
-        if(isErrorDisplayed()){
+        if(isErrorDisplayed(loginError)){
             throw new IllegalArgumentException("Failed to login user. Wrong mail name");
         } else {
             log.info("Mail name was found in the system.");
@@ -79,26 +90,32 @@ public class LoginPage extends Page {
     protected void enterPassword(String password) {
         activateInputField(PASSWORD_INPUT_CSS).sendKeys(password);
         driver.findElement(SUBMIT_BUTTON_CSS).click();
-        if(isErrorDisplayed()){
+        if(isErrorDisplayed(passwordError)){
             throw new IllegalArgumentException("Failed to login user. Wrong password");
         } else {
             log.info("Successfully logged in");
         }
     }
 
-    protected boolean isErrorDisplayed() {
-        return getWait(3).until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div#mailbox\\:error"))).isDisplayed();
-    }
-
-    private WebElement activateInputField(By selector) {
-        WebElement element = getWait(3).until(ExpectedConditions.elementToBeClickable(selector));
-        element.click();
-        return element;
+    protected boolean isErrorDisplayed(By selector) {
+        try {
+            return getWait(negativeWaitTimeout).until(ExpectedConditions.presenceOfElementLocated(selector)).isDisplayed();
+        } catch (TimeoutException ex) {
+            log.info("No error message detected while logging in");
+            return false;
+        }
     }
 
     protected WebDriverWait getWait(long timeout) {
         return new WebDriverWait(driver, timeout);
     }
+
+    private WebElement activateInputField(By selector) {
+        WebElement element = getWait(webElementTimeout).until(ExpectedConditions.elementToBeClickable(selector));
+        element.click();
+        return element;
+    }
+
 
     private boolean isCurrentPageAlternativeLogin() {
         return driver.getCurrentUrl().contains(AlternativeLoginPage.URL);

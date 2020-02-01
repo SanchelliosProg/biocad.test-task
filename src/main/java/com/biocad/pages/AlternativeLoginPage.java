@@ -16,6 +16,9 @@ public class AlternativeLoginPage extends LoginPage {
         PASSWORD_INPUT_CSS = By.cssSelector("input[name='Password']");
         ENTER_PASSWORD_BUTTON_CSS = By.cssSelector("button[data-test-id='next-button']");
         SUBMIT_BUTTON_CSS = By.cssSelector("button[data-test-id='submit-button']");
+
+        loginError = By.cssSelector("div[data-test-id='error-footer-text']");
+        passwordError = By.cssSelector("img.captcha__image");
     }
 
     @Override
@@ -27,12 +30,6 @@ public class AlternativeLoginPage extends LoginPage {
     @Override
     protected void chooseDomain(String domain) {
         driver.findElement(DOMAIN_SELECT_DIV_CSS).click();
-        getWait(3).until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div[aria-label='"+domain+"']"))).click();
-    }
-
-    @Override
-    protected boolean isErrorDisplayed() {
-        //p.c0126.c0126.c0145.c0138
-        return getWait(3).until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("p.c0126.c0126.c0145.c0138"))).isDisplayed();
+        getWait(webElementTimeout).until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div[aria-label='"+domain+"']"))).click();
     }
 }

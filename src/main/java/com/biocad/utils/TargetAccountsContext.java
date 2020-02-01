@@ -7,10 +7,10 @@ import java.util.Map;
 
 public class TargetAccountsContext {
     private static TargetAccountsContext instance;
-    private Map<User, Boolean> userCache;
+    private Boolean isTargetUserLoggedIn; //TODO: This singleton should hold Map with multiple target users in future
 
     private TargetAccountsContext() {
-        userCache = new HashMap<>();
+        isTargetUserLoggedIn = false;
     }
 
     public static TargetAccountsContext getInstance() {
@@ -21,7 +21,11 @@ public class TargetAccountsContext {
         return instance;
     }
 
-    public Map<User, Boolean> getUserCache() {
-        return userCache;
+    public Boolean isTargetUserLoggedIn() {
+        return isTargetUserLoggedIn;
+    }
+
+    public void isTargetUserLoggedIn(Boolean targetUserLoggedIn) {
+        isTargetUserLoggedIn = targetUserLoggedIn;
     }
 }

@@ -60,6 +60,6 @@ public class MailPage extends Page {
     }
 
     private void waitForInboxMessagesToAppear() {
-        new WebDriverWait(driver, 3).until(ExpectedConditions.presenceOfElementLocated(SECTION_WITH_MESSAGES_CSS));
+        new WebDriverWait(driver, webElementTimeout).until(ExpectedConditions.presenceOfElementLocated(SECTION_WITH_MESSAGES_CSS));
     }
 }

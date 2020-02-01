@@ -16,7 +16,7 @@ public class MessagePage extends Page {
     }
 
     public String getTopic() {
-        return new WebDriverWait(driver, 3)
+        return new WebDriverWait(driver, webElementTimeout)
                 .until(ExpectedConditions.presenceOfElementLocated(THREAD_SUBJECT_CSS))
                 .getText();
     }

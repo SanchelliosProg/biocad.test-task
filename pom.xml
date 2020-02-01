@@ -78,6 +78,14 @@
                             <name>loadWebDriverFromTestProject</name>
                             <value>false</value>
                         </property>
+                        <property>
+                            <name>webElementTimeout</name>
+                            <value>3</value>
+                        </property>
+                        <property>
+                            <name>negativeWaitTimeout</name>
+                            <value>1</value>
+                        </property>
                     </systemProperties>
                 </configuration>
             </plugin>

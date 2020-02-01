@@ -7,6 +7,7 @@ import com.biocad.utils.MailRuSmtpClient;
 import com.biocad.pages.LoginPage;
 import com.biocad.pages.MailPage;
 import com.biocad.pages.MessagePage;
+import com.biocad.utils.TargetAccountsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
@@ -38,21 +39,15 @@ public class EmailTest extends TestBase {
         //Test
         MailPage mailPage = new LoginPage(driver).navigateTo()
                 .login(targetUser);
-        SHOULD_CLEANUP_TARGET_ACCOUNT = true; //TODO: Move it to specific singleton
 
         MessagePage messagePage = mailPage.openMessageWithTitle(mailTopic);
 
-        assertThat(messagePage.getTopic(), equalTo(mailTopic));
-        assertThat(messagePage.getSenderEmail(), equalTo(senderUser.getEmail()));
-        assertThat(messagePage.getMessageContent(), equalTo(mailContent));
-    }
+        String actualTopic = messagePage.getTopic();
+        String actualSender = messagePage.getSenderEmail();
+        String actualMessageContent = messagePage.getMessageContent();
 
-    @Test
-    public void te() throws InterruptedException {
-        User u = new User("x", "@mail.ru", "xxx");
-        AlternativeLoginPage page = new AlternativeLoginPage(driver);
-        page.navigateTo();
-        page.login(u);
-        Thread.sleep(10000);
+        assertThat(String.format("Was expecting '%s' in topic of the email but have got '%s'", mailTopic, actualTopic), actualTopic, equalTo(mailTopic));
+        assertThat(String.format("Was expecting '%s' as sender email but have got '%s'", senderUser.getEmail(), actualSender), actualSender, equalTo(senderUser.getEmail()));
+        assertThat(String.format("Was expecting '%s' in mail content but have got '%s'", mailContent, actualMessageContent), actualMessageContent, equalTo(mailContent));
     }
 }

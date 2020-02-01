@@ -2,6 +2,7 @@ package com.biocad.tests;
 
 import com.biocad.models.User;
 import com.biocad.pages.MailPage;
+import com.biocad.utils.TargetAccountsContext;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,8 +19,6 @@ import java.io.IOException;
 import java.util.Map;
 
 public class TestBase {
-    //TODO: Place it into singleton
-    protected static boolean SHOULD_CLEANUP_TARGET_ACCOUNT = false;
 
     private static Logger log = LogManager.getLogger(TestBase.class);
 
@@ -53,7 +52,7 @@ public class TestBase {
         try {
             String pathToTestDataFile = System.getProperty("testDataPath");
             testDataJson = (JSONObject) new JSONParser().parse(new FileReader(pathToTestDataFile));
-            log.debug("Successfully loaded file from {}", pathToTestDataFile);
+            log.debug("Successfully loaded test-data file from {}", pathToTestDataFile);
         } catch (NullPointerException ex) {
             log.warn("File with test data could not be found in properties. Going to try load from default directory");
             testDataJson = (JSONObject) new JSONParser().parse(new FileReader("./src/test/resources/test-data.json"));
@@ -68,7 +67,7 @@ public class TestBase {
 
     @AfterAll
     public static void tearDown() {
-        if (SHOULD_CLEANUP_TARGET_ACCOUNT) {
+        if (TargetAccountsContext.getInstance().isTargetUserLoggedIn()) {
             cleanupTargetAccount();
         }
         driver.close();
