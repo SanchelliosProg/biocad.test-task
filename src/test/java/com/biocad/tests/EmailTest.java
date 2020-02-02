@@ -46,8 +46,14 @@ public class EmailTest extends TestBase {
         String actualSender = messagePage.getSenderEmail();
         String actualMessageContent = messagePage.getMessageContent();
 
-        assertThat(String.format("Was expecting '%s' in topic of the email but have got '%s'", mailTopic, actualTopic), actualTopic, equalTo(mailTopic));
-        assertThat(String.format("Was expecting '%s' as sender email but have got '%s'", senderUser.getEmail(), actualSender), actualSender, equalTo(senderUser.getEmail()));
-        assertThat(String.format("Was expecting '%s' in mail content but have got '%s'", mailContent, actualMessageContent), actualMessageContent, equalTo(mailContent));
+        assertThat(
+                String.format("Was expecting '%s' in topic of the email but have got '%s'", mailTopic, actualTopic),
+                actualTopic, equalTo(mailTopic));
+        assertThat(
+                String.format("Was expecting '%s' as sender email but have got '%s'", senderUser.getEmail(), actualSender),
+                actualSender, equalTo(senderUser.getEmail()));
+        assertThat(
+                String.format("Was expecting '%s' in mail content but have got '%s'", mailContent, actualMessageContent),
+                actualMessageContent, equalTo(mailContent));
     }
 }
